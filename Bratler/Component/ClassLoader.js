@@ -25,18 +25,19 @@ SOFTWARE.
 */
 
 /**
- * @version 1.0.0 
+ * @version 1.1.0 
  * 
  * @returns {Bratler_Component_ClassLoader}
  */
 function Bratler_Component_ClassLoader() {
-    var self, prefixes, suffixes, data, instances;
+    var self, prefixes, suffixes, data, instances, containerElement;
 
     self = this;
     prefixes = {};
     suffixes = {};
     data = {};
     instances = {};
+    containerElement = document.getElementsByTagName('HEAD').item(0);
 
     /**
      * crate a new instance of className
@@ -232,15 +233,14 @@ function Bratler_Component_ClassLoader() {
      * @param {string} className
      */
     this.require = function (url, className) {
-        var body, script;
+        var script;
 
-        body = document.getElementsByTagName('BODY').item(0);
         script = document.createElement("script");
         script.type = "text/javascript";
         script.innerHTML = data[className];
         script.setAttribute("data-Bratler_Component_ClassLoader-classname", className);
         script.setAttribute("data-Bratler_Component_ClassLoader-src", url);
-        body.appendChild(script);
+        self.getContainerElement().appendChild(script);
     };
 
     /**
@@ -249,6 +249,24 @@ function Bratler_Component_ClassLoader() {
      */
     this.isClassLoaded = function (className) {
         return (typeof window[className] === "function");
+    };
+    
+    /**
+     * Element to append the Javascript to.
+     * Default is &lt;head&gt;
+     * 
+     * @param {Element} element
+     * @returns {void}
+     */
+    this.setContainerElement = function (element) {
+        containerElement = element;        
+    };
+    
+    /**
+     * @returns {Element}
+     */
+    this.getContainerElement = function () {
+        return containerElement;  
     };
 
 }
